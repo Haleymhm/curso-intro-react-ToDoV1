@@ -13,6 +13,9 @@ const defaultTodos = [
   { text: 'Hacer ejercicios', completed: false },];
 
 function App() {
+  const localStorageTodos = localStorage.getItem('TODOS_V1');
+  let parsedTodos = []; // defaultTodos;
+
   const [todos, setTodos] = React.useState(defaultTodos);
   const [searchValue, setSearchValue] = React.useState('');
 
@@ -20,6 +23,15 @@ function App() {
   const totalTodos = todos.length;
 
   let searchedTodos = [];
+
+  if (!localStorageTodos) {
+    // * Si el usuario es nuevo no existe un item en localStorage, por lo tanto guardamos uno con un array vacío
+    localStorage.setItem('TODOS_V1', JSON.stringify(defaultTodos));
+    parsedTodos = [];
+  } else {
+    // * Si existen TODOs en el localStorage los regresamos como nuestros todos
+    parsedTodos = JSON.parse(localStorageTodos);
+  }
 
   if (!searchValue.length >= 1) {
     searchedTodos = todos;
@@ -35,6 +47,11 @@ function App() {
     const todoIndex = todos.findIndex(todo => todo.text === text);
     const newTodos = [...todos];
     newTodos[todoIndex].completed = true;
+     // * Convertimos a string nuestros TODOs
+    const stringifiedTodos = JSON.stringify(newTodos);
+     //* Los guardamos en el localStorage
+    localStorage.setItem('TODOS_V1', stringifiedTodos);
+     //? Actualizamos nuestro estado
     setTodos(newTodos);
   };
 
@@ -42,6 +59,11 @@ function App() {
     const todoIndex = todos.findIndex(todo => todo.text === text);
     const newTodos = [...todos];
     newTodos.splice(todoIndex, 1);
+     //* Convertimos a string nuestros TODOs
+    const stringifiedTodos = JSON.stringify(newTodos);
+     //* Los guardamos en el localStorage
+    localStorage.setItem('TODOS_V1', stringifiedTodos);
+     //? Actualizamos nuestro estado
     setTodos(newTodos);
   };
 
